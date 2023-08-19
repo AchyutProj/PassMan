@@ -52,6 +52,18 @@ class AuthService {
       _status = AuthExceptionHandler.handleAuthException(e);
     }
   }
+
+  Future<String?> getUserEmail(String uid) async {
+    try {
+      final user = await _firebaseAuth.currentUser;
+      if (user != null) {
+        return user.email;
+      }
+    } catch (e) {
+      print(e);
+    }
+    return null;
+  }
 }
 
 enum AuthStatus {
