@@ -32,6 +32,26 @@ class AuthService {
     }
     return AuthExceptionHandler.generateErrorMessage(_status);
   }
+
+  Future<String> resetPassword({required String email}) async {
+    try {
+      await _firebaseAuth.sendPasswordResetEmail(email: email);
+      _status = AuthStatus.successful;
+    } on FirebaseAuthException catch (e) {
+      _status = AuthExceptionHandler.handleAuthException(e);
+    }
+    return AuthExceptionHandler.generateErrorMessage(_status);
+  }
+
+  Future<void> changePassword({required String password, required String confirmPassword}) async {
+    try {
+      if (password == confirmPassword) {
+        await _firebaseAuth.currentUser!.updatePassword(password);
+      }
+    } on FirebaseAuthException catch (e) {
+      _status = AuthExceptionHandler.handleAuthException(e);
+    }
+  }
 }
 
 enum AuthStatus {
@@ -86,6 +106,9 @@ class AuthExceptionHandler {
         break;
       case AuthStatus.userNotFound:
         errorMessage = "User not found.";
+        break;
+      case AuthStatus.successful:
+        errorMessage = "";
         break;
       default:
         errorMessage = "An error occured. Please try again later.";

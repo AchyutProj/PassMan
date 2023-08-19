@@ -26,7 +26,7 @@ class _SignUpPageState extends State<SignUpPage> {
       _formKey.currentState!.save();
       String? result =
       await _authService.signUp(email: _email, password: _password);
-      if (result == null) {
+      if (result == "") {
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => LoginPage()));
         ScaffoldMessenger.of(context)
