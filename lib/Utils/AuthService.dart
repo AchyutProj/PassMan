@@ -6,4 +6,10 @@ class AuthService {
   User? get currentUser => _firebaseAuth.currentUser;
 
   Stream<User?> get authStateChanges => _firebaseAuth.authStateChanges();
+
+  Future<void> signOut() async {
+    await _firebaseAuth.signOut();
+  }
+
+
 }
