@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'My Password Manager',
       theme: AppTheme.themeData,
-      home: SplashScreen(),
+      home: const SplashScreen(),
     );
   }
 }

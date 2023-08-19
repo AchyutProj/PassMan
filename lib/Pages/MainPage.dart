@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart'; // Import the flutter_svg package
+import 'package:flutter_svg/flutter_svg.dart';
+
+import 'package:passman/Components/PMAppBar.dart';
 
 class MainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Password Manager'),
+      appBar: const PMAppBar(
+        title: 'Password Manager',
       ),
       body: Center(
         child: Column(
