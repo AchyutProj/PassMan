@@ -80,7 +80,9 @@ class _SignUpPageState extends State<SignUpPage> {
                 const SizedBox(height: 5),
                 TextButton(
                   onPressed: () {
-                    // Implement your functionality here
+                    Navigator.pushReplacement(
+                        context, MaterialPageRoute(builder: (context) => const LoginPage())
+                    );
                   },
                   child: const Text('Already have an account? Log In'),
                 ),

@@ -4,6 +4,7 @@ import 'package:passman/Components/Form/password_field.dart';
 import 'package:passman/Components/Form/text_field.dart';
 import 'package:passman/Components/app_bar.dart';
 import 'package:passman/Pages/main_page.dart';
+import 'package:passman/Pages/sign_up_page.dart';
 import 'package:passman/Utils/auth_service.dart';
 import 'package:passman/app_theme.dart';
 
@@ -90,7 +91,9 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(height: 5),
                 TextButton(
                   onPressed: () {
-                    // Implement your functionality here
+                    Navigator.pushReplacement(
+                        context, MaterialPageRoute(builder: (context) => const SignUpPage())
+                    );
                   },
                   child: const Text('Don\'t have an account? Sign Up'),
                 ),
