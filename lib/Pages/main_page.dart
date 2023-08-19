@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import 'package:passman/Components/PMAppBar.dart';
+import 'package:passman/Components/app_bar.dart';
 
 class MainPage extends StatelessWidget {
   @override

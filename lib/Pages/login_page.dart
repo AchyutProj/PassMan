@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:passman/Components/Form/PMPasswordField.dart';
-import 'package:passman/Components/Form/PMTextField.dart';
-import 'package:passman/Components/PMAppBar.dart';
-import 'package:passman/Pages/MainPage.dart';
-import 'package:passman/Utils/AuthService.dart';
+import 'package:passman/Components/Form/password_field.dart';
+import 'package:passman/Components/Form/text_field.dart';
+import 'package:passman/Components/app_bar.dart';
+import 'package:passman/Pages/main_page.dart';
+import 'package:passman/Utils/auth_service.dart';
 import 'package:passman/app_theme.dart';
 
 class LoginPage extends StatefulWidget {
