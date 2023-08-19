@@ -8,6 +8,7 @@ import 'package:passman/Pages/main_page.dart';
 import 'package:passman/Pages/sign_up_page.dart';
 import 'package:passman/Utils/auth_service.dart';
 import 'package:passman/app_theme.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'forgot_password_page.dart';
 
@@ -21,7 +22,10 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final AuthService _authService = AuthService();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  late String _email;
+
+  final Future<String?> lastEmail = SharedPreferences.getInstance().then((prefs) => prefs.getString('lastEmail'));
+
+  late String _email = lastEmail as String;
   late String _password;
 
   void _login() async {
@@ -40,6 +44,8 @@ class _LoginPageState extends State<LoginPage> {
       }
     }
   }
+
+  // get last
 
   @override
   Widget build(BuildContext context) {

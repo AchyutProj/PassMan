@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -16,6 +17,8 @@ class AuthService {
   Future<String> signIn({required String email, required String password}) async {
     try {
       await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
+      final prefs = await SharedPreferences.getInstance();
+      prefs.setString('lastEmail', email);
       _status = AuthStatus.successful;
     } on FirebaseAuthException catch (e) {
       _status = AuthExceptionHandler.handleAuthException(e);
@@ -55,12 +58,15 @@ class AuthService {
 
   Future<String?> getUserEmail(String uid) async {
     try {
-      final user = await _firebaseAuth.currentUser;
-      if (user != null) {
-        return user.email;
+      final prefs = await SharedPreferences.getInstance();
+      final email = prefs.getString('lastEmail');
+      if(email != null) {
+        return email;
+      } else {
+        AuthService().signOut();
       }
     } catch (e) {
-      print(e);
+      return null;
     }
     return null;
   }

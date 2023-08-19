@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:passman/Pages/login_page.dart';
 import 'package:passman/Pages/main_page.dart';
-import 'package:passman/Pages/sign_up_page.dart';
 import 'package:passman/Utils/auth_service.dart';
 import 'package:passman/app_theme.dart';
 
@@ -16,7 +16,8 @@ class SplashScreen extends StatelessWidget {
     Future.delayed(const Duration(seconds: 2), () {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (context) => isLoggedIn ? MainPage() : const SignUpPage(),
+          // builder: (context) => isLoggedIn ? MainPage() : const LoginPage()
+          builder: (context) => const LoginPage()
         ),
       );
     });
