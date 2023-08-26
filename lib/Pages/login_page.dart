@@ -25,8 +25,24 @@ class _LoginPageState extends State<LoginPage> {
 
   final Future<String?> lastEmail = SharedPreferences.getInstance().then((prefs) => prefs.getString('lastEmail'));
 
-  late String _email = lastEmail as String;
+  late String _email;
   late String _password;
+
+  late bool _disabledButton = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeEmail();
+  }
+
+  Future<void> _initializeEmail() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _email = prefs.getString('lastEmail') ?? ''; // Use '' as fallback
+    });
+  }
+
   void _login() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
@@ -43,8 +59,6 @@ class _LoginPageState extends State<LoginPage> {
       }
     }
   }
-
-  // get last
 
   @override
   Widget build(BuildContext context) {
@@ -86,8 +100,8 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 const SizedBox(height: 5),
                 PMElevatedButton(
-                  onPressed: _login,
-                  label: 'Login',
+                  onPressed: _disabledButton ? () {} : _login,
+                  label: _disabledButton ? 'Logging in...' : 'Login',
                 ),
                 const SizedBox(height: 5),
                 TextButton(

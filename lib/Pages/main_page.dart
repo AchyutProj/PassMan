@@ -5,6 +5,7 @@ import 'package:passman/Components/app_bar.dart';
 import 'package:passman/Pages/login_page.dart';
 import 'package:passman/Utils/auth_service.dart';
 import 'package:passman/app_theme.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -13,12 +14,15 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   final AuthService _authService = AuthService();
+  late SharedPreferences prefs;
 
   String? userEmail;
+  String? token;
 
   @override
   void initState() {
     super.initState();
+    _initializePrefs();
     _fetchUserEmail();
   }
 
@@ -30,6 +34,11 @@ class _MainPageState extends State<MainPage> {
         userEmail = email;
       });
     }
+  }
+
+  Future<void> _initializePrefs() async {
+    prefs = await SharedPreferences.getInstance(); // Initialize prefs here
+    token = prefs.getString('_token'); // Set the token
   }
 
   @override
@@ -61,6 +70,10 @@ class _MainPageState extends State<MainPage> {
                 style: const TextStyle(fontSize: 16),
               ),
             ],
+            Text(
+              'Token: $token',
+              style: const TextStyle(fontSize: 16),
+            ),
             const SizedBox(height: 20),
             PMElevatedButton(
               label: 'Logout',

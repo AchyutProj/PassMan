@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:passman/Components/Form/elevated_button.dart';
 import 'package:passman/Components/Form/password_field.dart';
 import 'package:passman/Components/Form/text_field.dart';
 import 'package:passman/Components/app_bar.dart';
@@ -24,11 +25,11 @@ class _SignUpPageState extends State<SignUpPage> {
   late String _email;
   late String _password;
 
-  late boolean _disableButton = false;
+  late bool _disabledButton = false;
 
   void _signUp() async {
     if (_formKey.currentState!.validate()) {
-      _disableButton = true;
+      _disabledButton = true;
       _formKey.currentState!.save();
       String? result =
           await _authService.signUp(
@@ -44,7 +45,7 @@ class _SignUpPageState extends State<SignUpPage> {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text('Sign Up Successful')));
       } else {
-        _disableButton = false;
+        _disabledButton = false;
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(result)));
       }
@@ -98,14 +99,9 @@ class _SignUpPageState extends State<SignUpPage> {
                   onSaved: (val) => _password = val!,
                 ),
                 const SizedBox(height: 5),
-                ElevatedButton(
-                  onPressed: _disableButton ? null : _signUp,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: _disableButton ? AppTheme.primaryColor.withOpacity(0.5) : AppTheme.primaryColor,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 50, vertical: 20),
-                  ),
-                  child: const Text(_disableButton ? 'Signing Up...' : 'Sign Up'),
+                PMElevatedButton(
+                  onPressed: _disabledButton ? () {} : _signUp,
+                  label: _disabledButton ? 'Signing Up...' : 'Sign Up',
                 ),
                 const SizedBox(height: 5),
                 TextButton(

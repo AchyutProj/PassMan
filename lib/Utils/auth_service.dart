@@ -17,22 +17,54 @@ class AuthService {
     await _firebaseAuth.signOut();
   }
 
-  Future<String> signIn({required String email, required String password}) async {
+  // Future<String> signIn({required String email, required String password}) async {
+  //   try {
+  //     await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
+  //     final prefs = await SharedPreferences.getInstance();
+  //     prefs.setString('lastEmail', email);
+  //     _status = AuthStatus.successful;
+  //
+  //     final firebaseUid = _firebaseAuth.currentUser?.uid ?? '';
+  //     prefs.setString('firebaseUid', firebaseUid); // Store Firebase UID in shared preferences
+  //
+  //     final response = await ApiService.post('login', {'email': email, 'password': password, 'firebase_uid': firebaseUid});
+  //
+  //     if (response['status'] == 200) {
+  //       prefs.setString('_token', json.decode(response['data']));
+  //     }
+  //   } on FirebaseAuthException catch (e) {
+  //     _status = AuthExceptionHandler.handleAuthException(e);
+  //   }
+  //   return AuthExceptionHandler.generateErrorMessage(_status);
+  // }
+
+  Future<String> signIn(
+      {required String email, required String password}) async {
     try {
-      await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
+      final UserCredential userCredential = await _firebaseAuth
+          .signInWithEmailAndPassword(email: email, password: password);
       final prefs = await SharedPreferences.getInstance();
       prefs.setString('lastEmail', email);
-      _status = AuthStatus.successful;
 
-      final response = await ApiService.post('login', {'email': email, 'password': password});
+      final firebaseUid = userCredential.user?.uid ?? '';
+      prefs.setString('firebaseUid', firebaseUid);
 
-      if (response['status']  == 200) {
-        final prefs = await SharedPreferences.getInstance();
-        prefs.setString('_token', json.decode(response['data']));
+      final response = await ApiService.post('login',
+          {'email': email, 'password': password, 'firebase_uid': firebaseUid});
+
+      if (response['status'] == 200) {
+        String token = response['data'];
+        prefs.setString('_token', token);
+        _status = AuthStatus.successful;
+      } else {
+        _status = AuthStatus.unknown;
       }
 
     } on FirebaseAuthException catch (e) {
       _status = AuthExceptionHandler.handleAuthException(e);
+    } catch (e) {
+      print(e);
+      _status = AuthStatus.unknown;
     }
     return AuthExceptionHandler.generateErrorMessage(_status);
   }
@@ -45,9 +77,13 @@ class AuthService {
     required String password,
   }) async {
     try {
-      final UserCredential userCredential = await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
+      final UserCredential userCredential = await _firebaseAuth
+          .createUserWithEmailAndPassword(email: email, password: password);
 
       final String firebaseUid = userCredential.user?.uid ?? '';
+      final prefs = await SharedPreferences.getInstance();
+
+      prefs.setString('firebaseUid', firebaseUid);
 
       final Map<String, dynamic> userData = {
         'first_name': firstName,
@@ -84,7 +120,8 @@ class AuthService {
     return AuthExceptionHandler.generateErrorMessage(_status);
   }
 
-  Future<void> changePassword({required String password, required String confirmPassword}) async {
+  Future<void> changePassword(
+      {required String password, required String confirmPassword}) async {
     try {
       if (password == confirmPassword) {
         await _firebaseAuth.currentUser!.updatePassword(password);
@@ -98,7 +135,7 @@ class AuthService {
     try {
       final prefs = await SharedPreferences.getInstance();
       final email = prefs.getString('lastEmail');
-      if(email != null) {
+      if (email != null) {
         return email;
       } else {
         AuthService().signOut();
@@ -144,6 +181,7 @@ class AuthExceptionHandler {
     }
     return status;
   }
+
   static String generateErrorMessage(error) {
     String errorMessage;
     switch (error) {
@@ -158,7 +196,7 @@ class AuthExceptionHandler {
         break;
       case AuthStatus.emailAlreadyExists:
         errorMessage =
-        "The email address is already in use by another account.";
+            "The email address is already in use by another account.";
         break;
       case AuthStatus.userNotFound:
         errorMessage = "User not found.";
