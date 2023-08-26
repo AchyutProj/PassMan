@@ -18,12 +18,27 @@ class GeneratedPassword {
   });
 
   factory GeneratedPassword.fromJson(Map<String, dynamic> json) => GeneratedPassword(
-    id: json['id'],
-    password: json['password'],
-    remarks: json['remarks'],
-    userId: json['user_id'],
-    deletedAt: json['deleted_at'],
-    updatedAt: json['updated_at'],
-    createdAt: json['created_at'],
+    id: json['id'] ?? 0,
+    password: json['password'] ?? '',
+    remarks: json['remarks'] ?? '',
+    userId: json['user_id'] ?? 0,
+    deletedAt: json['deleted_at'] ?? '',
+    updatedAt: json['updated_at'] ?? '',
+    createdAt: json['created_at'] ?? '',
   );
+
+  @override
+  String toString() {
+    return '''
+    {
+      "id": $id,
+      "password": "$password",
+      "remarks": "$remarks",
+      "user_id": $userId,
+      "deleted_at": "${deletedAt ?? ''}",
+      "updated_at": "$updatedAt",
+      "created_at": "$createdAt"
+    }
+    ''';
+  }
 }

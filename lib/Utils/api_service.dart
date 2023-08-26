@@ -38,12 +38,8 @@ class ApiService {
       final jsonResponse = json.decode(response.body);
 
       if (jsonResponse is List) {
-        print("List");
-        print(jsonResponse);
         return <String, dynamic>{'data': jsonResponse};
       } else if (jsonResponse is Map<String, dynamic>) {
-        print("Map");
-        print(jsonResponse);
         if (jsonResponse.containsKey('status')) {
           if (jsonResponse['status'] == 401) {
             final prefs = await SharedPreferences.getInstance();
@@ -60,11 +56,9 @@ class ApiService {
         }
         return <String, dynamic>{'data': jsonResponse};
       } else {
-        print("Unexpected response format");
         return <String, dynamic>{'error': 'Unexpected response format'};
       }
     } catch (error) {
-      print(error.toString());
       return <String, dynamic>{'error': error.toString()};
     }
   }

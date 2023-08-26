@@ -4,11 +4,11 @@ import 'package:passman/Components/Form/elevated_button.dart';
 import 'package:passman/Components/Form/password_field.dart';
 import 'package:passman/Components/Form/text_field.dart';
 import 'package:passman/Components/app_bar.dart';
-import 'package:passman/Pages/main_page.dart';
 import 'package:passman/Pages/sign_up_page.dart';
 import 'package:passman/Utils/auth_service.dart';
 import 'package:passman/app_theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:passman/Components/bottom_navigation.dart';
 
 import 'forgot_password_page.dart';
 
@@ -50,7 +50,7 @@ class _LoginPageState extends State<LoginPage> {
           await _authService.signIn(email: _email, password: _password);
       if (result == "") {
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => MainPage()));
+            context, MaterialPageRoute(builder: (context) => BottomBar()));
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text('Login Successful')));
       } else {
