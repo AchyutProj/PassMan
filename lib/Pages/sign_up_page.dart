@@ -18,20 +18,33 @@ class SignUpPage extends StatefulWidget {
 class _SignUpPageState extends State<SignUpPage> {
   final AuthService _authService = AuthService();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  late String _firstName;
+  late String _middleName;
+  late String _lastName;
   late String _email;
   late String _password;
 
+  late boolean _disableButton = false;
+
   void _signUp() async {
     if (_formKey.currentState!.validate()) {
+      _disableButton = true;
       _formKey.currentState!.save();
       String? result =
-          await _authService.signUp(email: _email, password: _password);
+          await _authService.signUp(
+              firstName: _firstName,
+              middleName: _middleName,
+              lastName: _lastName,
+              email: _email,
+              password: _password
+          );
       if (result == "") {
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => LoginPage()));
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text('Sign Up Successful')));
       } else {
+        _disableButton = false;
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(result)));
       }
@@ -61,19 +74,18 @@ class _SignUpPageState extends State<SignUpPage> {
                   labelText: 'First Name',
                   validator: (val) =>
                       val!.isEmpty ? 'Enter your first name' : null,
-                  onSaved: (val) => _email = val!,
+                  onSaved: (val) => _firstName = val!,
                 ),
                 PMTextField(
                   labelText: 'Middle Name',
-                  validator: (val) =>
-                      val!.isEmpty ? 'Enter your middle name' : null,
-                  onSaved: (val) => _email = val!,
+                  validator: null,
+                  onSaved: (val) => _middleName = val!,
                 ),
                 PMTextField(
                   labelText: 'Last Name',
                   validator: (val) =>
                       val!.isEmpty ? 'Enter your last name' : null,
-                  onSaved: (val) => _email = val!,
+                  onSaved: (val) => _lastName = val!,
                 ),
                 PMTextField(
                   labelText: 'Email',
@@ -87,13 +99,13 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
                 const SizedBox(height: 5),
                 ElevatedButton(
-                  onPressed: _signUp,
+                  onPressed: _disableButton ? null : _signUp,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppTheme.primaryColor,
+                    backgroundColor: _disableButton ? AppTheme.primaryColor.withOpacity(0.5) : AppTheme.primaryColor,
                     padding: const EdgeInsets.symmetric(
                         horizontal: 50, vertical: 20),
                   ),
-                  child: const Text('Sign Up'),
+                  child: const Text(_disableButton ? 'Signing Up...' : 'Sign Up'),
                 ),
                 const SizedBox(height: 5),
                 TextButton(

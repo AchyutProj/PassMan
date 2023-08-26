@@ -37,13 +37,40 @@ class AuthService {
     return AuthExceptionHandler.generateErrorMessage(_status);
   }
 
-  Future<String> signUp({required String email, required String password}) async {
+  Future<String> signUp({
+    required String firstName,
+    required String middleName,
+    required String lastName,
+    required String email,
+    required String password,
+  }) async {
     try {
-      await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
-      _status = AuthStatus.successful;
+      final UserCredential userCredential = await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
+
+      final String firebaseUid = userCredential.user?.uid ?? '';
+
+      final Map<String, dynamic> userData = {
+        'first_name': firstName,
+        'middle_name': middleName,
+        'last_name': lastName,
+        'email': email,
+        'password': password,
+        'firebase_uid': firebaseUid,
+      };
+
+      final response = await ApiService.post('register', userData);
+
+      if (response['status'] == 200) {
+        _status = AuthStatus.successful;
+      } else {
+        _status = AuthStatus.unknown;
+      }
     } on FirebaseAuthException catch (e) {
       _status = AuthExceptionHandler.handleAuthException(e);
+    } catch (e) {
+      _status = AuthStatus.unknown;
     }
+
     return AuthExceptionHandler.generateErrorMessage(_status);
   }
 
@@ -138,6 +165,9 @@ class AuthExceptionHandler {
         break;
       case AuthStatus.successful:
         errorMessage = "";
+        break;
+      case AuthStatus.unknown:
+        errorMessage = "An unknown error occured.";
         break;
       default:
         errorMessage = "An error occured. Please try again later.";
