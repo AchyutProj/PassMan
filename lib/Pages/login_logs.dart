@@ -18,6 +18,7 @@ class LoginLogs extends StatefulWidget {
 class _LoginLogsState extends State<LoginLogs> {
   late List<LoginLog> _loginLogs = [];
   PMHelper pmHelper = PMHelper();
+  late bool _isLoading = false;
 
   @override
   void initState() {
@@ -39,6 +40,9 @@ class _LoginLogsState extends State<LoginLogs> {
   }
 
   Future<void> _fetchLoginLogs() async {
+    setState(() {
+      _isLoading = true;
+    });
     final prefs = await SharedPreferences.getInstance();
     String? userDataString = prefs.getString('user_data');
 
@@ -47,6 +51,7 @@ class _LoginLogsState extends State<LoginLogs> {
       List<LoginLog> loginLogs = await getLoginLogs();
       setState(() {
         _loginLogs = loginLogs;
+        _isLoading = false;
       });
     }
   }
@@ -73,8 +78,8 @@ class _LoginLogsState extends State<LoginLogs> {
                         color: AppTheme.primaryColor)),
                 IconButton(
                   icon: Icon(
-                      Icons.refresh,
-                      color: AppTheme.primaryColor.withOpacity(0.5),
+                    Icons.refresh,
+                    color: AppTheme.primaryColor.withOpacity(0.5),
                   ),
                   onPressed: _fetchLoginLogs,
                 ),
@@ -82,31 +87,41 @@ class _LoginLogsState extends State<LoginLogs> {
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              itemCount: _loginLogs.length,
-              itemBuilder: (context, index) {
-                return Card(
-                  elevation: 3,
-                  margin: EdgeInsets.symmetric(vertical: 4, horizontal: 16),
-                  child: ListTile(
-                    title: Text(
-                      'IP Address: ${_loginLogs[index].ipAddress}',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(height: 4),
-                        Text('Date: ${pmHelper.formatDateTime(_loginLogs[index].createdAt)}'),
-                        SizedBox(height: 4),
-                        Text('Using: ${_loginLogs[index].userAgent}'),
-                        SizedBox(height: 4),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
+            child: _isLoading
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : _loginLogs.length > 0
+                    ? ListView.builder(
+                        itemCount: _loginLogs.length,
+                        itemBuilder: (context, index) {
+                          return Card(
+                            elevation: 3,
+                            margin: EdgeInsets.symmetric(
+                                vertical: 4, horizontal: 16),
+                            child: ListTile(
+                              title: Text(
+                                'IP Address: ${_loginLogs[index].ipAddress}',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(height: 4),
+                                  Text(
+                                      'Date: ${pmHelper.formatDateTime(_loginLogs[index].createdAt)}'),
+                                  SizedBox(height: 4),
+                                  Text('Using: ${_loginLogs[index].userAgent}'),
+                                  SizedBox(height: 4),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      )
+                    : Center(
+                        child: Text('No login logs found'),
+                      ),
           ),
         ],
       ),

@@ -15,6 +15,9 @@ class AuthService {
   AuthStatus _status = AuthStatus.unknown;
 
   Future<void> signOut() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('user_data', '');
+    prefs.setString('_token', '');
     await _firebaseAuth.signOut();
   }
 
@@ -58,6 +61,7 @@ class AuthService {
     required String firstName,
     required String middleName,
     required String lastName,
+    required String username,
     required String email,
     required String password,
   }) async {
@@ -74,6 +78,7 @@ class AuthService {
         'first_name': firstName,
         'middle_name': middleName,
         'last_name': lastName,
+        'username': username,
         'email': email,
         'password': password,
         'firebase_uid': firebaseUid,

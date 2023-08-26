@@ -3,6 +3,7 @@ import 'package:passman/Utils/auth_service.dart';
 import 'package:passman/app_theme.dart';
 import 'package:passman/Pages/login_logs.dart';
 import 'package:passman/Pages/login_page.dart';
+import 'package:passman/Pages/main_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:passman/Model/User.dart';
 import 'dart:convert';
@@ -41,7 +42,7 @@ class _SidebarDrawerState extends State<SidebarDrawer> {
         padding: EdgeInsets.zero,
         children: [
           UserAccountsDrawerHeader(
-            accountName: Text(_user?.firstName ?? ''),
+            accountName: Text(_user?.fullName() ?? ''),
             accountEmail: Text(_user?.email ?? ''),
             currentAccountPicture: CircleAvatar(
               backgroundColor: Colors.white,
@@ -50,6 +51,15 @@ class _SidebarDrawerState extends State<SidebarDrawer> {
             decoration: BoxDecoration(
               color: AppTheme.primaryColor,
             ),
+          ),
+          ListTile(
+            leading: Icon(Icons.home),
+            title: Text('Home'),
+            onTap: () {
+              Navigator.pushReplacement(
+                  context, MaterialPageRoute(builder: (context) => MainPage())
+              );
+            },
           ),
           ListTile(
             leading: Icon(Icons.login),

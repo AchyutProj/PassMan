@@ -69,4 +69,8 @@ class User {
     }
   ''';
   }
+
+  String fullName() {
+    return '$firstName ${middleName != '' ? '$middleName ' : ''}$lastName';
+  }
 }

@@ -22,6 +22,7 @@ class _SignUpPageState extends State<SignUpPage> {
   late String _firstName;
   late String _middleName;
   late String _lastName;
+  late String _username;
   late String _email;
   late String _password;
 
@@ -36,6 +37,7 @@ class _SignUpPageState extends State<SignUpPage> {
               firstName: _firstName,
               middleName: _middleName,
               lastName: _lastName,
+              username: _username,
               email: _email,
               password: _password
           );
@@ -87,6 +89,12 @@ class _SignUpPageState extends State<SignUpPage> {
                   validator: (val) =>
                       val!.isEmpty ? 'Enter your last name' : null,
                   onSaved: (val) => _lastName = val!,
+                ),
+                PMTextField(
+                  labelText: 'Username',
+                  validator: (val) =>
+                      val!.isEmpty ? 'Enter a username' : null,
+                  onSaved: (val) => _username = val!,
                 ),
                 PMTextField(
                   labelText: 'Email',
