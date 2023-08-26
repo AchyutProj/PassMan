@@ -18,27 +18,6 @@ class AuthService {
     await _firebaseAuth.signOut();
   }
 
-  // Future<String> signIn({required String email, required String password}) async {
-  //   try {
-  //     await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
-  //     final prefs = await SharedPreferences.getInstance();
-  //     prefs.setString('lastEmail', email);
-  //     _status = AuthStatus.successful;
-  //
-  //     final firebaseUid = _firebaseAuth.currentUser?.uid ?? '';
-  //     prefs.setString('firebaseUid', firebaseUid); // Store Firebase UID in shared preferences
-  //
-  //     final response = await ApiService.post('login', {'email': email, 'password': password, 'firebase_uid': firebaseUid});
-  //
-  //     if (response['status'] == 200) {
-  //       prefs.setString('_token', json.decode(response['data']));
-  //     }
-  //   } on FirebaseAuthException catch (e) {
-  //     _status = AuthExceptionHandler.handleAuthException(e);
-  //   }
-  //   return AuthExceptionHandler.generateErrorMessage(_status);
-  // }
-
   Future<String> signIn(
       {required String email, required String password}) async {
     try {

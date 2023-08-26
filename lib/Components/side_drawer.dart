@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:passman/Utils/auth_service.dart';
 import 'package:passman/app_theme.dart';
+import 'package:passman/Pages/login_logs.dart';
 import 'package:passman/Pages/login_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:passman/Model/User.dart';
@@ -51,10 +52,12 @@ class _SidebarDrawerState extends State<SidebarDrawer> {
             ),
           ),
           ListTile(
-            leading: Icon(Icons.dashboard),
-            title: Text('Dashboard'),
+            leading: Icon(Icons.login),
+            title: Text('Login Logs'),
             onTap: () {
-
+              Navigator.pushReplacement(
+                  context, MaterialPageRoute(builder: (context) => const LoginLogs())
+              );
             },
           ),
 

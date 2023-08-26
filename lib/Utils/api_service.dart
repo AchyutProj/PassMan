@@ -1,13 +1,18 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:passman/Model/LoginLog.dart';
 
 class ApiService {
   static const baseUrl = 'https://passman.achyut.com.np/api/v1/';
 
   static Future<Map<String, String>> _getHeaders() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? token = prefs.getString('_token');
     return {
       'Content-Type': 'application/json',
-      // Add other headers like authorization here if needed
+      'Authorization': 'Bearer $token',
     };
   }
 
@@ -20,7 +25,7 @@ class ApiService {
       final jsonResponse = json.decode(response.body);
       return jsonResponse;
     } catch (error) {
-      throw Exception('Failed to load data from the API');
+      return <String, dynamic>{'error': error.toString()};
     }
   }
 
@@ -31,32 +36,32 @@ class ApiService {
     try {
       final response = await http.post(uri, headers: headers, body: json.encode(data));
       final jsonResponse = json.decode(response.body);
-      return jsonResponse;
+
+      if (jsonResponse is List) {
+        return <String, dynamic>{'data': jsonResponse};
+      } else if (jsonResponse is Map<String, dynamic>) {
+        if (jsonResponse.containsKey('status')) {
+          if (jsonResponse['status'] == 401) {
+            final prefs = await SharedPreferences.getInstance();
+            prefs.remove('_token');
+            prefs.remove('user_data');
+          }
+
+          print(jsonResponse['data'].runtimeType);
+
+          if (jsonResponse['status'] == 200) {
+            final Map<String, dynamic> responseData = jsonResponse;
+            return responseData;
+          } else {
+            return <String, dynamic>{'error': jsonResponse['message']};
+          }
+        }
+        return <String, dynamic>{'data': jsonResponse};
+      } else {
+        return <String, dynamic>{'error': 'Unexpected response format'};
+      }
     } catch (error) {
-      throw Exception('Failed to send data to the API');
+      return <String, dynamic>{'error': error.toString()};
     }
   }
-
-  // Add other HTTP methods as needed (PUT, DELETE, etc.)
-
-  // You can create specific methods for each API endpoint you have
-  static Future<Map<String, dynamic>> getUser(int userId) async {
-    final String endpoint = '/users/$userId'; // Replace with your API endpoint
-    return await get(endpoint);
-  }
-
-  // Add more methods for other API endpoints
-
-  // Example of integrating your "Generated Passwords" endpoint
-  static Future<Map<String, dynamic>> getGeneratedPasswords() async {
-    final String endpoint = '/generated-passwords';
-    return await get(endpoint);
-  }
-
-  static Future<Map<String, dynamic>> generateNewPassword(Map<String, dynamic> data) async {
-    final String endpoint = '/generated-passwords/store';
-    return await post(endpoint, data);
-  }
-
-// Add more methods for other endpoints
 }
