@@ -2,7 +2,7 @@ class GeneratedPassword {
   int id;
   String password;
   String remarks;
-  int userId;
+  String userId;
   String deletedAt;
   String updatedAt;
   String createdAt;
@@ -21,7 +21,7 @@ class GeneratedPassword {
     id: json['id'] ?? 0,
     password: json['password'] ?? '',
     remarks: json['remarks'] ?? '',
-    userId: json['user_id'] ?? 0,
+    userId: json['user_id'] ?? '',
     deletedAt: json['deleted_at'] ?? '',
     updatedAt: json['updated_at'] ?? '',
     createdAt: json['created_at'] ?? '',

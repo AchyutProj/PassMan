@@ -68,7 +68,7 @@ class _GeneratedPasswordsState extends State<GeneratedPasswords> {
       drawer: SidebarDrawer(),
       body: Column(
         children: [
-          GeneratePasswords(),
+          GeneratePasswords(fetchGeneratedPasswords: _fetchGeneratedPasswords),
           Padding(
             padding:
                 const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
@@ -103,10 +103,16 @@ class _GeneratedPasswordsState extends State<GeneratedPasswords> {
                         itemCount: _generatedPasswords.length,
                         itemBuilder: (context, index) {
                           return Card(
+                            elevation: 3,
+                            margin: EdgeInsets.symmetric(
+                                vertical: 4, horizontal: 16),
                             child: ListTile(
-                              title: Text(_generatedPasswords[index].password),
+                              title: Text(
+                                  _generatedPasswords[index].password,
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
                               subtitle:
-                                  Text(_generatedPasswords[index].createdAt),
+                                  Text("Saved on: ${pmHelper.formatDateTime(_generatedPasswords[index].createdAt)}"),
                             ),
                           );
                         },
