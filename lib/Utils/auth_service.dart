@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:passman/Model/User.dart' as PMAuth;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'api_service.dart';
@@ -53,17 +54,22 @@ class AuthService {
           {'email': email, 'password': password, 'firebase_uid': firebaseUid});
 
       if (response['status'] == 200) {
-        String token = response['data'];
+        final Map<String, dynamic> responseData = response['data'];
+        final String token = responseData['token'];
+        final Map<String, dynamic> userData = responseData['user'];
+
         prefs.setString('_token', token);
+
+        final PMAuth.User user = PMAuth.User.fromJson(userData);
+        prefs.setString('user_data', user.toString());
+
         _status = AuthStatus.successful;
       } else {
         _status = AuthStatus.unknown;
       }
-
     } on FirebaseAuthException catch (e) {
       _status = AuthExceptionHandler.handleAuthException(e);
     } catch (e) {
-      print(e);
       _status = AuthStatus.unknown;
     }
     return AuthExceptionHandler.generateErrorMessage(_status);
