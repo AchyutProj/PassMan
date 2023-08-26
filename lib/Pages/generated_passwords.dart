@@ -5,17 +5,18 @@ import 'package:passman/app_theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:passman/Components/side_drawer.dart';
 import 'package:passman/Components/app_bar.dart';
+import 'package:passman/Components/generate_password.dart';
 import 'package:passman/Utils/helpers.dart';
 import 'dart:convert';
 
-class GeneratePasswords extends StatefulWidget {
-  const GeneratePasswords({Key? key}) : super(key: key);
+class GeneratedPasswords extends StatefulWidget {
+  const GeneratedPasswords({Key? key}) : super(key: key);
 
   @override
-  _GeneratePasswordsState createState() => _GeneratePasswordsState();
+  _GeneratedPasswordsState createState() => _GeneratedPasswordsState();
 }
 
-class _GeneratePasswordsState extends State<GeneratePasswords> {
+class _GeneratedPasswordsState extends State<GeneratedPasswords> {
   late List<GeneratedPassword> _generatedPasswords = [];
   PMHelper pmHelper = PMHelper();
   late bool _isLoading = false;
@@ -67,6 +68,7 @@ class _GeneratePasswordsState extends State<GeneratePasswords> {
       drawer: SidebarDrawer(),
       body: Column(
         children: [
+          GeneratePasswords(),
           Padding(
             padding:
                 const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),

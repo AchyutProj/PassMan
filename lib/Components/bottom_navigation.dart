@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:passman/Pages/main_page.dart';
-import 'package:passman/Pages/generate_passwords.dart';
+import 'package:passman/Pages/generated_passwords.dart';
 import 'package:passman/app_theme.dart';
 
 class BottomBar extends StatefulWidget {
@@ -13,7 +13,7 @@ class _BottomBarState extends State<BottomBar> {
 
   final List<Widget> _pages = [
     MainPage(),
-    GeneratePasswords(),
+    GeneratedPasswords(),
     Container(
       child: Center(
         child: Text('Settings'),
