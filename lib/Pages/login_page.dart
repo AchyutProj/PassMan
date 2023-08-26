@@ -27,7 +27,6 @@ class _LoginPageState extends State<LoginPage> {
 
   late String _email = lastEmail as String;
   late String _password;
-
   void _login() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();

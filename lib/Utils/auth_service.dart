@@ -71,7 +71,7 @@ class AuthService {
     return null;
   }
 }
-
+-
 enum AuthStatus {
   successful,
   wrongPassword,
