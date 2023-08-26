@@ -21,21 +21,30 @@ class _PMPasswordFieldState extends State<PMPasswordField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      decoration: InputDecoration(
-        labelText: widget.labelText,
-        suffixIcon: IconButton(
-          icon: Icon(obscureText ? Icons.visibility : Icons.visibility_off),
-          onPressed: () {
-            setState(() {
-              obscureText = !obscureText;
-            });
-          },
+    return Column(
+      children: [
+        const SizedBox(height: 5),
+        TextFormField(
+          decoration: InputDecoration(
+            labelText: widget.labelText,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(5),
+            ),
+            suffixIcon: IconButton(
+              icon: Icon(obscureText ? Icons.visibility : Icons.visibility_off),
+              onPressed: () {
+                setState(() {
+                  obscureText = !obscureText;
+                });
+              },
+            ),
+          ),
+          validator: widget.validator,
+          onSaved: widget.onSaved,
+          obscureText: obscureText,
         ),
-      ),
-      validator: widget.validator,
-      onSaved: widget.onSaved,
-      obscureText: obscureText,
+        const SizedBox(height: 5),
+      ],
     );
   }
 }

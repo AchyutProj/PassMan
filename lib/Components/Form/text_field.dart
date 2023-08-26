@@ -16,11 +16,23 @@ class PMTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      decoration: InputDecoration(labelText: labelText),
-      validator: validator,
-      onSaved: onSaved,
-      obscureText: obscureText,
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const SizedBox(height: 5),
+        TextFormField(
+          decoration: InputDecoration(
+            labelText: labelText,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(5),
+            ),
+          ),
+          validator: validator,
+          onSaved: onSaved,
+          obscureText: obscureText,
+        ),
+        const SizedBox(height: 5),
+      ],
     );
   }
 }

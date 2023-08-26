@@ -25,7 +25,7 @@ class _SignUpPageState extends State<SignUpPage> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       String? result =
-      await _authService.signUp(email: _email, password: _password);
+          await _authService.signUp(email: _email, password: _password);
       if (result == "") {
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => LoginPage()));
@@ -58,6 +58,24 @@ class _SignUpPageState extends State<SignUpPage> {
                   height: 100,
                 ),
                 PMTextField(
+                  labelText: 'First Name',
+                  validator: (val) =>
+                      val!.isEmpty ? 'Enter your first name' : null,
+                  onSaved: (val) => _email = val!,
+                ),
+                PMTextField(
+                  labelText: 'Middle Name',
+                  validator: (val) =>
+                      val!.isEmpty ? 'Enter your middle name' : null,
+                  onSaved: (val) => _email = val!,
+                ),
+                PMTextField(
+                  labelText: 'Last Name',
+                  validator: (val) =>
+                      val!.isEmpty ? 'Enter your last name' : null,
+                  onSaved: (val) => _email = val!,
+                ),
+                PMTextField(
                   labelText: 'Email',
                   validator: (val) => val!.isEmpty ? 'Enter an email' : null,
                   onSaved: (val) => _email = val!,
@@ -81,8 +99,9 @@ class _SignUpPageState extends State<SignUpPage> {
                 TextButton(
                   onPressed: () {
                     Navigator.pushReplacement(
-                        context, MaterialPageRoute(builder: (context) => const LoginPage())
-                    );
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const LoginPage()));
                   },
                   child: const Text('Already have an account? Log In'),
                 ),

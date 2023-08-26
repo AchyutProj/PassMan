@@ -1,5 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+import 'api_service.dart';
+import 'dart:convert';
 
 class AuthService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -20,6 +23,14 @@ class AuthService {
       final prefs = await SharedPreferences.getInstance();
       prefs.setString('lastEmail', email);
       _status = AuthStatus.successful;
+
+      final response = await ApiService.post('login', {'email': email, 'password': password});
+
+      if (response['status']  == 200) {
+        final prefs = await SharedPreferences.getInstance();
+        prefs.setString('_token', json.decode(response['data']));
+      }
+
     } on FirebaseAuthException catch (e) {
       _status = AuthExceptionHandler.handleAuthException(e);
     }
@@ -71,7 +82,7 @@ class AuthService {
     return null;
   }
 }
--
+
 enum AuthStatus {
   successful,
   wrongPassword,
