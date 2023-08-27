@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:passman/Pages/main_page.dart';
 import 'package:passman/Pages/generated_passwords.dart';
+import 'package:passman/Pages/organizations_page.dart';
 import 'package:passman/app_theme.dart';
 
 class BottomBar extends StatefulWidget {
@@ -13,29 +14,24 @@ class _BottomBarState extends State<BottomBar> {
 
   final List<Widget> _pages = [
     MainPage(),
+    OrganizationsPage(),
     GeneratedPasswords(),
-    Container(
-      child: Center(
-        child: Text('Settings'),
-      ),
-    ),
   ];
 
   void _onTabTapped(int index) {
+    print("Index: " + index.toString());
+    print("currentIndex: " + _currentIndex.toString());
 
-    print("Index: " +index.toString());
-    print("currentIndex: " +_currentIndex.toString());
+    // if(_currentIndex != index) {
+    setState(() {
+      _currentIndex = index;
+    });
 
-    if(_currentIndex != index) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => _pages[index]),
-      );
-
-      setState(() {
-        _currentIndex = index;
-      });
-    }
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => _pages[index]),
+    );
+    // }
   }
 
   @override

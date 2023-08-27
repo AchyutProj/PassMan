@@ -16,3 +16,91 @@ class OrganizationsPage extends StatefulWidget {
   @override
   _OrganizationsPageState createState() => _OrganizationsPageState();
 }
+
+class _OrganizationsPageState extends State<OrganizationsPage> {
+  late List<Organization> _organizations = [];
+  PMHelper pmHelper = PMHelper();
+  late bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchOrganizations();
+  }
+
+  static Future<List<Organization>> getOrganizations() async {
+    final String endpoint = 'organizations';
+    final Map<String, dynamic> response = await ApiService.post(endpoint, null);
+    if (response.containsKey('error')) {
+      return [];
+    }
+    return response['data']
+        .map<Organization>((organization) => Organization.fromJson(organization))
+        .toList()
+        .reversed
+        .toList();
+  }
+
+  Future<void> _fetchOrganizations() async {
+    setState(() {
+      _isLoading = true;
+    });
+    final prefs = await SharedPreferences.getInstance();
+    String? userDataString = prefs.getString('user_data');
+
+    if (userDataString != null) {
+      Map<String, dynamic> userDataMap = json.decode(userDataString);
+      List<Organization> organizations = await getOrganizations();
+      setState(() {
+        _organizations = organizations;
+        _isLoading = false;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: PMAppBar(
+        title: 'Organizations',
+      ),
+      drawer: SidebarDrawer(),
+      bottomNavigationBar: BottomBar(),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              'Organizations',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          Expanded(
+            child: _isLoading
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : ListView.builder(
+                    itemCount: _organizations.length,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Card(
+                          child: ListTile(
+                            title: Text(_organizations[index].name),
+                            subtitle: Text(_organizations[index].remarks),
+                            onTap: () {},
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+          ),
+        ],
+      ),
+    );
+  }
+}
