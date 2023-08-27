@@ -41,6 +41,7 @@ class _MainPageState extends State<MainPage> {
         title: 'Password Manager',
       ),
       drawer: SidebarDrawer(),
+      bottomNavigationBar: BottomBar(),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
