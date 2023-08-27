@@ -6,6 +6,7 @@ import 'package:passman/Pages/login_page.dart';
 import 'package:passman/Utils/auth_service.dart';
 import 'package:passman/app_theme.dart';
 import 'package:passman/Components/side_drawer.dart';
+import 'package:passman/Components/bottom_navigation.dart';
 
 class MainPage extends StatefulWidget {
   @override
