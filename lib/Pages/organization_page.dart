@@ -41,7 +41,7 @@ class _OrganizationPageState extends State<OrganizationPage> {
     final String endpoint = 'organizations/show/$organizationId';
     final Map<String, dynamic> response = await ApiService.post(endpoint, null);
     if (response.containsKey('error')) {
-      return Organization();
+      print(response['message']);
     }
     return Organization.fromJson(response['data']);
   }
@@ -63,6 +63,22 @@ class _OrganizationPageState extends State<OrganizationPage> {
     }
   }
 
+  Widget _buildDetailItem(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          Text(value),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,8 +97,49 @@ class _OrganizationPageState extends State<OrganizationPage> {
           },
         ),
       ),
-      body: Center(
-        child: Text('Organization ID: ${widget.organizationId}'),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(
+                horizontal: 16.0, vertical: 16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Organization Details',
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: AppTheme.primaryColor),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: _isLoading
+                ? Center(
+              child: CircularProgressIndicator(),
+            )
+                : SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0, vertical: 4.0),
+                child: Column(
+                  children: [
+                    _buildDetailItem('Name', _organization?.name ?? 'N/A'),
+                    _buildDetailItem('Email', _organization?.email ?? 'N/A'),
+                    _buildDetailItem('Website', _organization?.website ?? 'N/A'),
+                    _buildDetailItem(
+                        'Phone Number', _organization?.phoneNumber ?? 'N/A'),
+                    _buildDetailItem('Remarks', _organization?.remarks ?? 'N/A'),
+                    _buildDetailItem(
+                        'Created At', pmHelper.formatDateTime(_organization?.createdAt ?? 'N/A')),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
