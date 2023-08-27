@@ -120,7 +120,11 @@ class _LoginLogsState extends State<LoginLogs> {
                         },
                       )
                     : Center(
-                        child: Text('No login logs found'),
+                        child: Text(
+                            'No login logs found',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: AppTheme.primaryColor.withOpacity(0.6))),
                       ),
           ),
         ],

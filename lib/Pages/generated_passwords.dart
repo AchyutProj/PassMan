@@ -92,7 +92,10 @@ class _GeneratedPasswordsState extends State<GeneratedPasswords> {
                   )
                 : _generatedPasswords.length == 0
                     ? Center(
-                        child: Text('No Generated Passwords'),
+                        child: Text('No Generated Passwords',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: AppTheme.primaryColor.withOpacity(0.6))),
                       )
                     : ListView.builder(
                         itemCount: _generatedPasswords.length,
@@ -103,11 +106,11 @@ class _GeneratedPasswordsState extends State<GeneratedPasswords> {
                                 vertical: 4, horizontal: 16),
                             child: ListTile(
                               title: Text(
-                                  _generatedPasswords[index].password,
-                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                _generatedPasswords[index].password,
+                                style: TextStyle(fontWeight: FontWeight.bold),
                               ),
-                              subtitle:
-                                  Text("Saved on: ${pmHelper.formatDateTime(_generatedPasswords[index].createdAt)}"),
+                              subtitle: Text(
+                                  "Saved on: ${pmHelper.formatDateTime(_generatedPasswords[index].createdAt)}"),
                             ),
                           );
                         },
