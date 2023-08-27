@@ -7,6 +7,10 @@ import 'package:passman/Components/app_bar.dart';
 import 'package:passman/app_theme.dart';
 
 class BottomBar extends StatefulWidget {
+  final int initialIndex;
+
+  BottomBar({this.initialIndex = 0});
+
   @override
   _BottomBarState createState() => _BottomBarState();
 }
@@ -35,7 +39,7 @@ class _BottomBarState extends State<BottomBar> {
   @override
   void initState() {
     super.initState();
-    _onTabTapped(0);
+    _currentIndex = widget.initialIndex;
   }
 
   @override
