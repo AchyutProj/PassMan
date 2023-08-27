@@ -7,6 +7,7 @@ import 'package:passman/Components/app_bar.dart';
 import 'package:passman/Components/generate_password.dart';
 import 'package:passman/Components/Form/text_field.dart';
 import 'package:passman/Utils/helpers.dart';
+import 'package:passman/Pages/organization_page.dart';
 import 'dart:convert';
 
 class OrganizationsPage extends StatefulWidget {
@@ -193,7 +194,14 @@ class _OrganizationsPageState extends State<OrganizationsPage> {
                         )
                     ),
                     subtitle: Text(_organizations[index].remarks),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>
+                          OrganizationPage(
+                              organizationId: _organizations[index].id,
+                              organizationName: _organizations[index].name,
+                          )
+                      ));
+                    },
                   ),
                 );
               },

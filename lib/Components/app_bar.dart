@@ -4,8 +4,14 @@ import 'package:passman/app_theme.dart';
 class PMAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final bool showAppBar;
+  final Widget? leading;
 
-  const PMAppBar({super.key, required this.title, this.showAppBar = true});
+  const PMAppBar({
+    Key? key,
+    required this.title,
+    this.showAppBar = true,
+    this.leading,
+  }) : super(key: key);
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
@@ -20,6 +26,7 @@ class PMAppBar extends StatelessWidget implements PreferredSizeWidget {
       title: Text(title),
       centerTitle: true,
       backgroundColor: AppTheme.primaryColor,
+      leading: leading,
     );
   }
 }
