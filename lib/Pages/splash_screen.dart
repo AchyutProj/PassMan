@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:passman/Pages/login_page.dart';
-import 'package:passman/Pages/main_page.dart';
+import 'package:passman/Components/bottom_navigation.dart';
 import 'package:passman/Utils/auth_service.dart';
 import 'package:passman/app_theme.dart';
 
@@ -17,7 +17,7 @@ class SplashScreen extends StatelessWidget {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           // builder: (context) => isLoggedIn ? MainPage() : const LoginPage()
-          builder: (context) => MainPage()
+          builder: (context) => BottomBar()
         ),
       );
     });

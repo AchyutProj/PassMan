@@ -5,8 +5,6 @@ import 'package:passman/Components/app_bar.dart';
 import 'package:passman/Pages/login_page.dart';
 import 'package:passman/Utils/auth_service.dart';
 import 'package:passman/app_theme.dart';
-import 'package:passman/Components/side_drawer.dart';
-import 'package:passman/Components/bottom_navigation.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -37,11 +35,6 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const PMAppBar(
-        title: 'Password Manager',
-      ),
-      drawer: SidebarDrawer(),
-      bottomNavigationBar: BottomBar(),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
