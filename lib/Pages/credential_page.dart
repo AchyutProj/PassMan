@@ -62,6 +62,48 @@ class _CredentialPageState extends State<CredentialPage> {
     }
   }
 
+  Future<void> _deleteCredential(int credentialId) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirm Deletion'),
+          content: Text('Are you sure you want to delete this credential?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () async {
+                Navigator.of(context).pop(); // Close the dialog
+                await _performDelete(credentialId);
+              },
+              child: Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _performDelete(int credentialId) async {
+    final String endpoint = 'credentials/delete/$credentialId';
+    final Map<String, dynamic> response = await ApiService.post(endpoint, null);
+    if (response.containsKey('error')) {
+      print(response['message']);
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => BottomBar(initialIndex: 1),
+        ),
+      );
+    }
+  }
+
   Widget _buildDetailItem(String label, String value,
       {bool isPassword = false}) {
     return Padding(
@@ -144,19 +186,32 @@ class _CredentialPageState extends State<CredentialPage> {
           },
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => CredentialAddEditPage(
-                credentialId: widget.credentialId,
-                credentialName: _credential!.name,
-              ),
-            ),
-          );
-        },
-        child: Icon(Icons.edit),
-        backgroundColor: AppTheme.primaryColor,
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => CredentialAddEditPage(
+                    credentialId: widget.credentialId,
+                    credentialName: _credential!.name,
+                  ),
+                ),
+              );
+            },
+            child: Icon(Icons.edit),
+            backgroundColor: AppTheme.primaryColor,
+            heroTag: null, // Added this line to prevent hero animation conflict
+          ),
+          SizedBox(width: 16),
+          FloatingActionButton(
+            onPressed: () => _deleteCredential(widget.credentialId),
+            child: Icon(Icons.delete),
+            backgroundColor: Colors.red, // You can change this to a color of your choice
+            heroTag: null, // Added this line to prevent hero animation conflict
+          ),
+        ],
       ),
       body: _isLoading
           ? const Center(
