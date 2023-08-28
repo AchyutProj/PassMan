@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:passman/Pages/main_page.dart';
-import 'package:passman/Pages/generated_passwords.dart';
-import 'package:passman/Pages/organizations_page.dart';
 import 'package:passman/Components/side_drawer.dart';
 import 'package:passman/Components/app_bar.dart';
 import 'package:passman/app_theme.dart';
+
+import 'package:passman/Pages/main_page.dart';
+import 'package:passman/Pages/vault_page.dart';
+import 'package:passman/Pages/generated_passwords.dart';
+import 'package:passman/Pages/organizations_page.dart';
 
 class BottomBar extends StatefulWidget {
   final int initialIndex;
@@ -20,19 +22,23 @@ class _BottomBarState extends State<BottomBar> {
 
   final List<Widget> _pages = [
     MainPage(),
+    VaultPage(),
     OrganizationsPage(),
-    GeneratedPasswords(),
+    GeneratedPasswords()
   ];
 
   final List<String> _titles = [
     'PassMan',
+    'Vault',
     'Organizations',
-    'Generated Passwords',
+    'Generated Passwords'
   ];
 
   void _onTabTapped(int index) {
     setState(() {
-      _currentIndex = index;
+      if (index >= 0 && index < _pages.length) {
+        _currentIndex = index;
+      }
     });
   }
 
@@ -51,24 +57,28 @@ class _BottomBarState extends State<BottomBar> {
       ),
       drawer: SidebarDrawer(),
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.shifting,
         currentIndex: _currentIndex,
         onTap: _onTabTapped,
-        backgroundColor: AppTheme.primaryColor,
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.white.withOpacity(0.5),
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
+              icon: Icon(Icons.home),
+              label: 'Home',
+              backgroundColor: AppTheme.primaryColor),
           BottomNavigationBarItem(
-            icon: Icon(Icons.business),
-            label: 'Organization',
-          ),
+              icon: Icon(Icons.vpn_key),
+              label: 'Vault',
+              backgroundColor: AppTheme.primaryColor),
           BottomNavigationBarItem(
-            icon: Icon(Icons.password),
-            label: 'Generate Password',
-          ),
+              icon: Icon(Icons.business),
+              label: 'Organization',
+              backgroundColor: AppTheme.primaryColor),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.password),
+              label: 'Generate Password',
+              backgroundColor: AppTheme.primaryColor),
         ],
       ),
     );
