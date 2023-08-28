@@ -93,7 +93,10 @@ class _CredentialPageState extends State<CredentialPage> {
                       IconButton(
                         icon: Icon(Icons.copy),
                         onPressed: () {
-                          pmHelper.copyToClipboard(value);
+                          bool copied = pmHelper.copyToClipboard(value);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(copied ? 'Password copied to clipboard' : 'Failed to copy password')),
+                          );
                         },
                       )
                     ])

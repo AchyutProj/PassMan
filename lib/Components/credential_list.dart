@@ -63,7 +63,10 @@ class _CredentialListState extends State<CredentialList> {
             trailing: IconButton(
               icon: Icon(Icons.copy),
               onPressed: () {
-                pmHelper.copyToClipboard(credentials[index].password);
+                bool copied = pmHelper.copyToClipboard(credentials[index].password);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(copied ? 'Password copied to clipboard' : 'Failed to copy password')),
+                );
               },
             ),
             onTap: () {

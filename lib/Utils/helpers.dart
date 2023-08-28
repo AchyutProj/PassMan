@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'dart:math';
 
 class PMHelper {
@@ -65,7 +66,12 @@ class PMHelper {
     return password;
   }
 
-  void copyToClipboard(String value) {
-
+  bool copyToClipboard(String value) {
+    try {
+      Clipboard.setData(ClipboardData(text: value));
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 }
