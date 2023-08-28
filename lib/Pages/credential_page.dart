@@ -139,7 +139,7 @@ class _CredentialPageState extends State<CredentialPage> {
             Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => BottomBar(initialIndex: 0)));
+                    builder: (context) => BottomBar(initialIndex: 1)));
           },
         ),
       ),

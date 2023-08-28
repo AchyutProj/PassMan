@@ -7,7 +7,7 @@ import 'package:passman/Components/app_bar.dart';
 import 'package:passman/Utils/helpers.dart';
 import 'package:passman/Components/bottom_navigation.dart';
 import 'package:passman/Components/credential_list.dart';
-import 'package:passman/Pages/credential_page.dart';
+import 'package:passman/Pages/credential_add_edit_page.dart';
 import 'dart:convert';
 
 class VaultPage extends StatefulWidget {
@@ -60,11 +60,12 @@ class _VaultPageState extends State<VaultPage> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pushReplacement(
-            context,
+          Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (context) =>
-                  CredentialPage(credentialId: 1, credentialName: "Test"),
+              builder: (_) => CredentialAddEditPage(
+                credentialId: 0,
+                credentialName: 'Add Credential',
+              ),
             ),
           );
         },
