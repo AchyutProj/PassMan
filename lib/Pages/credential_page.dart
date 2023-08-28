@@ -67,7 +67,7 @@ class _CredentialPageState extends State<CredentialPage> {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextField(
         readOnly: true,
-        obscureText: isPassword && _showPass ? true : false,
+        obscureText: isPassword && !_showPass ? true : false,
         decoration: InputDecoration(
           labelText: label,
           labelStyle: TextStyle(
@@ -83,7 +83,7 @@ class _CredentialPageState extends State<CredentialPage> {
                   mainAxisSize: MainAxisSize.min, // added line
                   children: <Widget>[
                       IconButton(
-                        icon: Icon(!_showPass ? Icons.visibility : Icons.visibility_off),
+                        icon: Icon(!_showPass ? Icons.visibility_off : Icons.visibility),
                         onPressed: () {
                           setState(() {
                             _showPass = !_showPass;
@@ -136,7 +136,7 @@ class _CredentialPageState extends State<CredentialPage> {
             Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => BottomBar(initialIndex: 1)));
+                    builder: (context) => BottomBar(initialIndex: 0)));
           },
         ),
       ),

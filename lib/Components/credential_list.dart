@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:passman/Model/Credential.dart';
 import 'package:passman/app_theme.dart';
 import 'package:passman/Pages/credential_page.dart';
+import 'package:passman/Utils/helpers.dart';
 
 class CredentialList extends StatefulWidget {
   const CredentialList({Key? key, required this.credentials}) : super(key: key);
@@ -14,6 +15,7 @@ class CredentialList extends StatefulWidget {
 
 class _CredentialListState extends State<CredentialList> {
   List<Credential> get credentials => widget.credentials;
+  PMHelper pmHelper = PMHelper();
 
   Widget _buildDetailItem(String label, String value) {
     return Padding(
@@ -60,7 +62,9 @@ class _CredentialListState extends State<CredentialList> {
             ),
             trailing: IconButton(
               icon: Icon(Icons.copy),
-              onPressed: () {},
+              onPressed: () {
+                pmHelper.copyToClipboard(credentials[index].password);
+              },
             ),
             onTap: () {
               Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>
