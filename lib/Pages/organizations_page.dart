@@ -4,9 +4,8 @@ import 'package:passman/Utils/api_service.dart';
 import 'package:passman/app_theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:passman/Components/app_bar.dart';
-import 'package:passman/Components/generate_password.dart';
-import 'package:passman/Components/Form/text_field.dart';
 import 'package:passman/Utils/helpers.dart';
+import 'package:passman/Components/Form/text_field.dart';
 import 'package:passman/Pages/organization_page.dart';
 import 'dart:convert';
 

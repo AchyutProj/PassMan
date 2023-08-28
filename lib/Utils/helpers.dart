@@ -64,4 +64,8 @@ class PMHelper {
 
     return password;
   }
+
+  void copyToClipboard(String value) {
+
+  }
 }
