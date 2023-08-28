@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:passman/Components/Form/elevated_button.dart';
 import 'package:passman/Components/app_bar.dart';
-import 'package:passman/Pages/login_page.dart';
-import 'package:passman/Utils/auth_service.dart';
 import 'package:passman/app_theme.dart';
+import 'package:passman/Model/Statistics.dart';
+import 'package:passman/Utils/api_service.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -12,24 +11,68 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  final AuthService _authService = AuthService();
 
-  String? userEmail;
+  late bool _isLoading = false;
+  Statistics? _statistics;
 
   @override
   void initState() {
     super.initState();
-    _fetchUserEmail();
+    _fetchStatistics();
   }
 
-  Future<void> _fetchUserEmail() async {
-    final user = _authService.currentUser;
-    if (user != null) {
-      final email = await _authService.getUserEmail(user.uid);
-      setState(() {
-        userEmail = email;
-      });
+  static Future<Statistics> getStatistics() async {
+    final String endpoint = 'statistics';
+    final Map<String, dynamic> response = await ApiService.post(endpoint, null);
+    if (response.containsKey('error')) {
+      Statistics.fromJson({});
     }
+    return Statistics.fromJson(response['data']);
+  }
+
+  Future<void> _fetchStatistics() async {
+    setState(() {
+      _isLoading = true;
+    });
+    Statistics statistics = await getStatistics();
+    setState(() {
+      _statistics = statistics;
+      _isLoading = false;
+    });
+  }
+
+  Widget StatBox({required String title, required int value}) {
+    return Container(
+      width: double.infinity,
+      margin: EdgeInsets.symmetric(horizontal: 16),
+      padding: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppTheme.primaryColor,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(height: 8),
+          Text(
+            value.toString(),
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -47,25 +90,17 @@ class _MainPageState extends State<MainPage> {
               height: 100,
             ),
             const SizedBox(height: 20),
-            const Text(
-              'Welcome to Passman',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            if (userEmail != null) ...[
-              const SizedBox(height: 10),
-              Text(
-                'Logged in as: $userEmail',
-                style: const TextStyle(fontSize: 16),
-              ),
-            ],
-            const SizedBox(height: 20),
-            PMElevatedButton(
-              label: 'Logout',
-              onPressed: () async {
-                await _authService.signOut();
-                Navigator.pushReplacement(
-                    context, MaterialPageRoute(builder: (context) => LoginPage()));
-              },
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: _isLoading ? [
+                CircularProgressIndicator(),
+              ] : [
+                StatBox(title: 'Credentials', value: _statistics?.credentials ?? 0),
+                const SizedBox(height: 20),
+                StatBox(title: 'Organizations', value: _statistics?.organizations ?? 0),
+                const SizedBox(height: 20),
+                StatBox(title: 'Generated Passwords', value: _statistics?.generatedPasswords ?? 0),
+              ],
             ),
           ],
         ),
