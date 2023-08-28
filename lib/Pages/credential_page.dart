@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:passman/Components/app_bar.dart';
 import 'package:passman/Utils/helpers.dart';
 import 'package:passman/Components/bottom_navigation.dart';
+import 'package:passman/Pages/credential_add_edit_page.dart';
 import 'dart:convert';
 
 class CredentialPage extends StatefulWidget {
@@ -142,6 +143,20 @@ class _CredentialPageState extends State<CredentialPage> {
                     builder: (context) => BottomBar(initialIndex: 1)));
           },
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => CredentialAddEditPage(
+                credentialId: widget.credentialId,
+                credentialName: _credential!.name,
+              ),
+            ),
+          );
+        },
+        child: Icon(Icons.edit),
+        backgroundColor: AppTheme.primaryColor,
       ),
       body: _isLoading
           ? const Center(

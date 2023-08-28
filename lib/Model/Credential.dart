@@ -6,6 +6,7 @@ class Credential {
   String password;
   String remarks;
   String userId;
+  String deletedAt;
   String createdAt;
   String updatedAt;
   CredUser user;
@@ -18,6 +19,7 @@ class Credential {
     required this.password,
     required this.remarks,
     required this.userId,
+    required this.deletedAt,
     required this.createdAt,
     required this.updatedAt,
     required this.user,
@@ -31,6 +33,7 @@ class Credential {
     password: json['password'] ?? '',
     remarks: json['remarks'] ?? '',
     userId: json['user_id'] ?? '',
+    deletedAt: json['deleted_at'] ?? '',
     createdAt: json['created_at'] ?? '',
     updatedAt: json['updated_at'] ?? '',
     user: json['user'] != null ? CredUser.fromJson(json['user']) : CredUser.fromJson({}),
@@ -47,6 +50,7 @@ class Credential {
       "password": ${password ?? ''},
       "remarks": ${remarks ?? ''},
       "user_id": ${userId ?? ''},
+      "deleted_at": "${deletedAt ?? ''}",
       "created_at": "${createdAt ?? ''}",
       "updated_at": "${updatedAt ?? ''}",
       "user": ${user != null ? user.toString() : {}}    }
@@ -68,10 +72,10 @@ class CredUser {
   });
 
   factory CredUser.fromJson(Map<String, dynamic> json) => CredUser(
-    id: json['id'],
-    firstName: json['first_name'],
+    id: json['id'] ?? 0,
+    firstName: json['first_name'] ?? '',
     middleName: json['middle_name'] ?? '',
-    lastName: json['last_name'],
+    lastName: json['last_name'] ?? '',
   );
 
   @override

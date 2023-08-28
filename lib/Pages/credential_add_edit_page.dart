@@ -7,6 +7,7 @@ import 'package:passman/Components/app_bar.dart';
 import 'package:passman/Utils/helpers.dart';
 import 'package:passman/Components/bottom_navigation.dart';
 import 'package:passman/Components/Form/text_field.dart';
+import 'package:passman/Pages/credential_page.dart';
 import 'dart:convert';
 
 class CredentialAddEditPage extends StatefulWidget {
@@ -42,10 +43,41 @@ class _CredentialAddEditPageState extends State<CredentialAddEditPage> {
   @override
   void initState() {
     super.initState();
+
+    if (widget.credentialId != 0) {
+      _fetchCredential(widget.credentialId);
+    }
+
     setState(() {
-      _credentialId = widget.credentialId;
       _appBarTitle = widget.credentialName;
     });
+  }
+
+  static Future<Credential> getCredential(int credentialId) async {
+    final String endpoint = 'credentials/show/$credentialId';
+    final Map<String, dynamic> response = await ApiService.post(endpoint, null);
+    if (response.containsKey('error')) {
+      return Credential.fromJson({});
+    }
+    return Credential.fromJson(response['data']);
+  }
+
+  Future<void> _fetchCredential(int credentialId) async {
+    setState(() {
+      _isLoading = true;
+    });
+    final prefs = await SharedPreferences.getInstance();
+    String? userDataString = prefs.getString('user_data');
+
+    if (userDataString != null) {
+      Map<String, dynamic> userDataMap = json.decode(userDataString);
+      Credential credential = await getCredential(credentialId);
+
+      setState(() {
+        _credential = credential;
+        _isLoading = false;
+      });
+    }
   }
 
   void _addEditCred() async {
@@ -58,14 +90,24 @@ class _CredentialAddEditPageState extends State<CredentialAddEditPage> {
         'password': _Password,
         'remarks': _Remarks,
       };
-      final String endpoint = 'credentials/store';
+      final String storeEndpoint = 'credentials/store';
+      final String updateEndpoint = 'credentials/update/${widget.credentialId}';
+      final String endpoint = widget.credentialId == 0 ? storeEndpoint : updateEndpoint;
       final Map<String, dynamic> response =
           await ApiService.post(endpoint, data);
       if (response.containsKey('error')) {
-        print(response['message']);
+        SnackBar snackBar = SnackBar(
+          content: Text(response['message']),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
       }
       Navigator.pushReplacement(context,
           MaterialPageRoute(builder: (context) => BottomBar(initialIndex: 1)));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('${response['message']}')
+        ),
+      );
     }
   }
 
@@ -77,84 +119,80 @@ class _CredentialAddEditPageState extends State<CredentialAddEditPage> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => BottomBar(initialIndex: 1),
-              ),
-            );
+            widget.credentialId != 0
+                ? Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CredentialPage(
+                          credentialId: widget.credentialId,
+                          credentialName: widget.credentialName),
+                    ),
+                  )
+                : Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => BottomBar(initialIndex: 1),
+                    ),
+                  );
           },
         ),
       ),
-      body: Form(
-        key: _formKey,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              PMTextField(
-                labelText: 'Name',
-                value: _Name,
-                validator: (val) =>
-                    val!.isEmpty ? 'Enter your credential name' : null,
-                onSaved: (val) => _Name = val!,
+      body: _isLoading
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : Form(
+              key: _formKey,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    PMTextField(
+                      labelText: 'Name',
+                      value: _credential != null ? _credential!.name : '',
+                      validator: (val) =>
+                          val!.isEmpty ? 'Enter your credential name' : null,
+                      onSaved: (val) => _Name = val!,
+                    ),
+                    PMTextField(
+                      labelText: 'Url',
+                      value: _credential != null ? _credential!.url : '',
+                      validator: (val) =>
+                          val!.isEmpty ? 'Enter your credential url' : null,
+                      onSaved: (val) => _Url = val!,
+                    ),
+                    PMTextField(
+                      labelText: 'Login',
+                      value: _credential != null ? _credential!.username : '',
+                      validator: (val) =>
+                          val!.isEmpty ? 'Enter the login' : null,
+                      onSaved: (val) => _Username = val!,
+                    ),
+                    PMTextField(
+                      labelText: 'Password',
+                      value: _credential != null ? _credential!.password : '',
+                      validator: (val) =>
+                          val!.isEmpty ? 'Enter the password' : null,
+                      onSaved: (val) => _Password = val!,
+                    ),
+                    PMTextField(
+                      labelText: 'Remarks',
+                      value: _credential != null ? _credential!.remarks : '',
+                      validator: null,
+                      onSaved: (val) => _Remarks = val!,
+                    ),
+                    SizedBox(
+                      height: 16.0,
+                    ),
+                    ElevatedButton(
+                      onPressed: () => _addEditCred(),
+                      child: Text('Save'),
+                    )
+                  ],
+                ),
               ),
-              PMTextField(
-                labelText: 'Url',
-                value: _Url,
-                validator: (val) =>
-                    val!.isEmpty ? 'Enter your credential url' : null,
-                onSaved: (val) => _Url = val!,
-              ),
-              PMTextField(
-                labelText: 'Login',
-                value: _Username,
-                validator: (val) => val!.isEmpty ? 'Enter the login' : null,
-                onSaved: (val) => _Username = val!,
-              ),
-              PMTextField(
-                labelText: 'Password',
-                value: _Password,
-                validator: (val) => val!.isEmpty ? 'Enter the password' : null,
-                onSaved: (val) => _Password = val!,
-              ),
-              PMTextField(
-                labelText: 'Remarks',
-                value: _Remarks,
-                validator: null,
-                onSaved: (val) => _Remarks = val!,
-              ),
-              SizedBox(
-                height: 16.0,
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  _formKey.currentState!.save();
-                  final Map<String, dynamic> data = {
-                    'name': _Name,
-                    'url': _Url,
-                    'username': _Username,
-                    'password': _Password,
-                    'remarks': _Remarks,
-                  };
-                  final String endpoint = 'credentials/store';
-                  final Map<String, dynamic> response =
-                      await ApiService.post(endpoint, data);
-                  if (response.containsKey('error')) {
-                    print(response['message']);
-                  }
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => BottomBar(initialIndex: 0)));
-                },
-                child: Text('Save'),
-              ),
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 }
