@@ -185,14 +185,15 @@ class _CredentialAddEditPageState extends State<CredentialAddEditPage> {
                     SizedBox(
                       height: 16.0,
                     ),
-                    ElevatedButton(
-                      onPressed: () => _addEditCred(),
-                      child: Text('Save'),
-                    )
                   ],
                 ),
               ),
             ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _addEditCred(),
+        child: Icon(Icons.save),
+        backgroundColor: AppTheme.primaryColor,
+      )
     );
   }
 }
