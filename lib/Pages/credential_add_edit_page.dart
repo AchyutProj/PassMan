@@ -13,11 +13,15 @@ import 'dart:convert';
 class CredentialAddEditPage extends StatefulWidget {
   final int credentialId;
   final String credentialName;
+  final int? organizationId;
+  final String? organizationName;
 
   const CredentialAddEditPage({
     Key? key,
     required this.credentialId,
     required this.credentialName,
+    this.organizationId,
+    this.organizationName,
   }) : super(key: key);
 
   @override
@@ -92,12 +96,18 @@ class _CredentialAddEditPageState extends State<CredentialAddEditPage> {
       };
       final String storeEndpoint = 'credentials/store';
       final String updateEndpoint = 'credentials/update/${widget.credentialId}';
-      final String endpoint = widget.credentialId == 0 ? storeEndpoint : updateEndpoint;
+      final String organizationStoreEndpoint =
+          'organizations/credentials/${widget.organizationId}/store';
+      final String endpoint = widget.credentialId == 0
+          ? widget.organizationId == null
+              ? storeEndpoint
+              : organizationStoreEndpoint
+          : updateEndpoint;
       final Map<String, dynamic> response =
           await ApiService.post(endpoint, data);
       if (response.containsKey('error')) {
         SnackBar snackBar = SnackBar(
-          content: Text(response['message']),
+          content: Text("Error performing operation."),
         );
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
       }

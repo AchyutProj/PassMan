@@ -7,16 +7,21 @@ import 'package:passman/Components/app_bar.dart';
 import 'package:passman/Utils/helpers.dart';
 import 'package:passman/Components/bottom_navigation.dart';
 import 'package:passman/Pages/credential_add_edit_page.dart';
+import 'package:passman/Pages/organization_page.dart';
 import 'dart:convert';
 
 class CredentialPage extends StatefulWidget {
   final int credentialId;
   final String credentialName;
+  final int? organizationId;
+  final String? organizationName;
 
   const CredentialPage({
     Key? key,
     required this.credentialId,
     required this.credentialName,
+    this.organizationId,
+    this.organizationName,
   }) : super(key: key);
 
   @override
@@ -33,15 +38,21 @@ class _CredentialPageState extends State<CredentialPage> {
   @override
   void initState() {
     super.initState();
-    _fetchCredential(widget.credentialId);
+    setState(() {
+      _credentialId = widget.credentialId;
+    });
+    _fetchCredential(_credentialId > 0 ? _credentialId : widget.credentialId);
   }
 
   static Future<Credential> getCredential(int credentialId) async {
     final String endpoint = 'credentials/show/$credentialId';
     final Map<String, dynamic> response = await ApiService.post(endpoint, null);
+    print(endpoint);
+    print(response);
     if (response.containsKey('error')) {
-      print(response['message']);
+      return Credential.fromJson({});
     }
+    print(response);
     return Credential.fromJson(response['data']);
   }
 
@@ -126,7 +137,9 @@ class _CredentialPageState extends State<CredentialPage> {
                   mainAxisSize: MainAxisSize.min, // added line
                   children: <Widget>[
                       IconButton(
-                        icon: Icon(!_showPass ? Icons.visibility_off : Icons.visibility),
+                        icon: Icon(!_showPass
+                            ? Icons.visibility_off
+                            : Icons.visibility),
                         onPressed: () {
                           setState(() {
                             _showPass = !_showPass;
@@ -138,7 +151,10 @@ class _CredentialPageState extends State<CredentialPage> {
                         onPressed: () {
                           bool copied = pmHelper.copyToClipboard(value);
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(copied ? 'Password copied to clipboard' : 'Failed to copy password')),
+                            SnackBar(
+                                content: Text(copied
+                                    ? 'Password copied to clipboard'
+                                    : 'Failed to copy password')),
                           );
                         },
                       )
@@ -179,10 +195,21 @@ class _CredentialPageState extends State<CredentialPage> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => BottomBar(initialIndex: 1)));
+            Navigator.of(context).push(
+              (widget.organizationId != null &&
+                  widget.organizationName != null &&
+                  (widget.organizationId ?? 0) > 0 &&
+                  widget.organizationName!.isNotEmpty)
+                  ? MaterialPageRoute(
+                builder: (context) => OrganizationPage(
+                  organizationId: widget.organizationId!,
+                  organizationName: widget.organizationName!,
+                ),
+              )
+                  : MaterialPageRoute(
+                builder: (context) => BottomBar(initialIndex: 1),
+              ),
+            );
           },
         ),
       ),
@@ -208,7 +235,8 @@ class _CredentialPageState extends State<CredentialPage> {
           FloatingActionButton(
             onPressed: () => _deleteCredential(widget.credentialId),
             child: Icon(Icons.delete),
-            backgroundColor: Colors.red, // You can change this to a color of your choice
+            backgroundColor: Colors.red,
+            // You can change this to a color of your choice
             heroTag: null, // Added this line to prevent hero animation conflict
           ),
         ],

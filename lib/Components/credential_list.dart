@@ -5,9 +5,17 @@ import 'package:passman/Pages/credential_page.dart';
 import 'package:passman/Utils/helpers.dart';
 
 class CredentialList extends StatefulWidget {
-  const CredentialList({Key? key, required this.credentials}) : super(key: key);
 
   final List<Credential> credentials;
+  final int? organizationId;
+  final String? organizationName;
+
+  const CredentialList({
+    Key? key,
+    required this.credentials,
+    this.organizationId,
+    this.organizationName,
+  }) : super(key: key);
 
   @override
   _CredentialListState createState() => _CredentialListState();
@@ -73,7 +81,9 @@ class _CredentialListState extends State<CredentialList> {
               Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>
                   CredentialPage(
                     credentialId: credentials[index].id,
-                    credentialName: credentials[index].name
+                    credentialName: credentials[index].name,
+                    organizationId: widget.organizationId,
+                    organizationName: widget.organizationName,
                   )
               ));
             }
