@@ -9,10 +9,12 @@ import 'dart:convert';
 
 class OrganizationsPasswords extends StatefulWidget {
   final int organizationId;
+  final String organizationName;
 
   const OrganizationsPasswords({
     Key? key,
     required this.organizationId,
+    required this.organizationName,
   }) : super(key: key);
 
   @override
@@ -111,6 +113,8 @@ class _OrganizationsPasswordsState extends State<OrganizationsPasswords> {
                 : Flexible(
                     child: CredentialList(
                       credentials: _credentials,
+                      organizationId: widget.organizationId,
+                      organizationName: widget.organizationName,
                     ),
                   ),
       ],

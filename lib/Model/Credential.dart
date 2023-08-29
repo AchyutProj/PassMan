@@ -53,7 +53,8 @@ class Credential {
       "deleted_at": "${deletedAt ?? ''}",
       "created_at": "${createdAt ?? ''}",
       "updated_at": "${updatedAt ?? ''}",
-      "user": ${user != null ? user.toString() : {}}    }
+      "user": ${user != null ? user.toString() : {}}    
+    }
     ''';
   }
 }
